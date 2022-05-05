@@ -24,7 +24,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 /// of 1883 is used.
 /// If you want to use websockets rather than TCP see below.
 
-final client = MqttServerClient('test.mosquitto.org', '');
+final client = MqttServerClient('127.0.0.1', '');
 
 var pongCount = 0; // Pong counter
 
@@ -106,7 +106,7 @@ Future<int> main() async {
 
   /// Ok, lets try a subscription
   print('EXAMPLE::Subscribing to the test/lol topic');
-  const topic = 'test/lol'; // Not a wildcard topic
+  const topic = 'test'; // Not a wildcard topic
   client.subscribe(topic, MqttQos.atMostOnce);
 
   /// The client has a change notifier object(see the Observable class) which we then listen to to get

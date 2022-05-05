@@ -448,7 +448,18 @@ void main() {
       final subs = SubscriptionsManager(testCHS, pm, clientEventBus);
       subs.registerSubscription(topic, qos);
       // Start listening
-      st = subs.subscriptionNotifier.listen(t1);
+      // st = subs.subscriptionNotifier.listen(t1);
+      final _subscriptionNotifier =
+          StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast(
+              sync: true);
+      var replay = subs.subscriptionNotifier.listen(
+        (event) {
+          for (var item in event) {
+            _subscriptionNotifier.add(item);
+          }
+        },
+      );
+      st = _subscriptionNotifier.stream.listen(t1);
       // Publish messages on the topic
       final buff = typed.Uint8Buffer(4);
       buff[0] = 'd'.codeUnitAt(0);

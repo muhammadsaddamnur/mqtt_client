@@ -242,9 +242,47 @@ class MqttClient {
   @protected
   events.EventBus? clientEventBus;
 
+  /// Creates a Stream that emits each item in the Stream after a given duration.
+  /// ### Example
+  ///
+  ///     Stream.fromIterable([1, 2, 3])
+  ///       .interval(Duration(seconds: 1))
+  ///       .listen((i) => print('$i sec'); // prints 1 sec, 2 sec, 3 sec
+  ///
+  ///
+  /// ** New **
+  Duration streamInterval = Duration(milliseconds: 0);
+
+  /// Creates a Stream where each item is a [List] containing the items
+  /// from the source sequence, sampled on a time frame with [duration].
+  ///
+  /// ### Example
+  ///
+  ///     Stream.periodic(Duration(milliseconds: 100), (int i) => i)
+  ///       .bufferTime(Duration(milliseconds: 220))
+  ///       .listen(print); // prints [0, 1] [2, 3] [4, 5] ...
+  ///
+  /// ** New **
+  Duration streamBufferTime = Duration(milliseconds: 0);
+
   /// The stream on which all subscribed topic updates are published to
-  Stream<List<MqttReceivedMessage<MqttMessage>>>? get updates =>
-      subscriptionsManager?.subscriptionNotifier;
+  // Stream<List<MqttReceivedMessage<MqttMessage>>>? get updates =>
+  //     subscriptionsManager?.subscriptionNotifier;
+  /// ** New **
+  Stream<List<MqttReceivedMessage<MqttMessage>>>? get updates {
+    final _subscriptionNotifier =
+        StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast(
+            sync: true);
+    subscriptionsManager?.streamInterval = streamInterval;
+    subscriptionsManager?.streamBufferTime = streamBufferTime;
+    subscriptionsManager?.subscriptionNotifier.listen((event) {
+      for (var item in event) {
+        _subscriptionNotifier.sink.add(item);
+      }
+    });
+    print('=========== ${_subscriptionNotifier.stream}');
+    return _subscriptionNotifier.stream;
+  }
 
   /// Common client connection method.
   Future<MqttClientConnectionStatus?> connect(

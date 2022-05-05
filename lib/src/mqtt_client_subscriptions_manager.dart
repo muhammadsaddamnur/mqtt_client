@@ -64,14 +64,53 @@ class SubscriptionsManager {
   /// The event bus
   final events.EventBus? _clientEventBus;
 
+  /// Creates a Stream that emits each item in the Stream after a given duration.
+  /// ### Example
+  ///
+  ///     Stream.fromIterable([1, 2, 3])
+  ///       .interval(Duration(seconds: 1))
+  ///       .listen((i) => print('$i sec'); // prints 1 sec, 2 sec, 3 sec
+  ///
+  ///
+  /// ** New **
+  Duration streamInterval = Duration(milliseconds: 0);
+
+  /// Creates a Stream where each item is a [List] containing the items
+  /// from the source sequence, sampled on a time frame with [duration].
+  ///
+  /// ### Example
+  ///
+  ///     Stream.periodic(Duration(milliseconds: 100), (int i) => i)
+  ///       .bufferTime(Duration(milliseconds: 220))
+  ///       .listen(print); // prints [0, 1] [2, 3] [4, 5] ...
+  ///
+  /// ** New **
+  Duration streamBufferTime = Duration(milliseconds: 0);
+
   /// Stream for all subscribed topics
+  // final _subscriptionNotifier =
+  //     StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast(
+  //         sync: true);
+  // ** New **
   final _subscriptionNotifier =
-      StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast(
-          sync: true);
+      ReplaySubject<List<MqttReceivedMessage<MqttMessage>>>();
 
   /// Subscription notifier
-  Stream<List<MqttReceivedMessage<MqttMessage>>> get subscriptionNotifier =>
-      _subscriptionNotifier.stream;
+  // Stream<List<MqttReceivedMessage<MqttMessage>>> get subscriptionNotifier =>
+  //     _subscriptionNotifier.stream;
+  // ** New **
+  Stream<
+      List<
+          List<
+              MqttReceivedMessage<
+                  MqttMessage>>>> get subscriptionNotifier => _subscriptionNotifier
+      .stream
+      .interval(
+        streamInterval,
+      ) // interval time untuk mengembalikan hasil stream, mengambil 200 milisecond setiap interval
+      .bufferTime(
+        streamBufferTime,
+      );
 
   /// Registers a new subscription with the subscription manager.
   Subscription? registerSubscription(String topic, MqttQos qos) {
