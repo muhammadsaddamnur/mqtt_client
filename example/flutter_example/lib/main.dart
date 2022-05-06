@@ -33,6 +33,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   MqttServerClient? client;
   String message = '';
+  bool showNotification = false;
 
   void connect() async {
     client = MqttServerClient('10.0.2.2', 's');
@@ -43,10 +44,20 @@ class _MyHomePageState extends State<MyHomePage> {
     client!.port = 1883;
 
     /// ** New **
-    client!.streamInterval = Duration(milliseconds: 100);
+    client!.streamInterval = const Duration(milliseconds: 100);
 
     /// ** New **
-    client!.streamBufferTime = Duration(milliseconds: 1000);
+    client!.streamBufferTime = const Duration(milliseconds: 1000);
+
+    /// ** New **
+    client!.maxConnectionAttempts = 5;
+
+    /// ** New **
+    client!.backoffDelay = 200;
+
+    /// ** New **
+    client!.onAutoReconnectMaxAttemptCallback =
+        onAutoReconnectMaxAttemptCallback;
 
     client!.onConnected = onConnected;
     client!.onAutoReconnect = onAutoreconnect;
@@ -56,6 +67,38 @@ class _MyHomePageState extends State<MyHomePage> {
     await client!.connect();
 
     update();
+  }
+
+  /// ** New **
+  void onAutoReconnectMaxAttemptCallback() {
+    if (showNotification == false) {
+      showNotification = true;
+      showModalBottomSheet<void>(
+        context: context,
+        isDismissible: false,
+        builder: (BuildContext context) {
+          return Container(
+            height: 200,
+            color: Colors.white,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Text('Koneksi terputus, cek jariangan ya'),
+                  ElevatedButton(
+                      child: const Text('Oke'),
+                      onPressed: () {
+                        showNotification = false;
+                        Navigator.pop(context);
+                      })
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
   }
 
   void onConnected() {

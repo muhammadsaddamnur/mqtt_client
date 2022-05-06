@@ -11,8 +11,12 @@ part of mqtt_client;
 ///  to serverand browser connection handler implementations.
 abstract class MqttConnectionHandlerBase implements IMqttConnectionHandler {
   /// Initializes a new instance of the [MqttConnectionHandlerBase] class.
-  MqttConnectionHandlerBase(this.clientEventBus,
-      {required this.maxConnectionAttempts});
+  MqttConnectionHandlerBase(
+    this.clientEventBus, {
+    required this.maxConnectionAttempts,
+    // ** New **
+    required this.backoffDelay,
+  });
 
   /// Successful connection callback.
   @override
@@ -29,6 +33,11 @@ abstract class MqttConnectionHandlerBase implements IMqttConnectionHandler {
   /// Auto reconnected callback
   @override
   AutoReconnectCompleteCallback? onAutoReconnected;
+
+  /// Auto reconnected callback when limit max attempt
+  /// ** New **
+  @override
+  AutoReconnectMaxAttemptCallback? onAutoReconnectMaxAttemptCallback;
 
   /// Auto reconnect in progress
   @override
@@ -52,6 +61,10 @@ abstract class MqttConnectionHandlerBase implements IMqttConnectionHandler {
 
   /// Max connection attempts
   final int? maxConnectionAttempts;
+
+  /// Backoff in milisecond
+  /// ** New **
+  final int? backoffDelay;
 
   /// The broker connection acknowledgment timer
   @protected

@@ -27,6 +27,10 @@ abstract class IMqttConnectionHandler {
   /// Auto reconnected callback
   AutoReconnectCompleteCallback? onAutoReconnected;
 
+  /// Auto reconnected callback when limit max attempt
+  /// ** New **
+  AutoReconnectMaxAttemptCallback? onAutoReconnectMaxAttemptCallback;
+
   /// Auto reconnect in progress
   bool? autoReconnectInProgress;
 

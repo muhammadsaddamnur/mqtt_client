@@ -15,7 +15,14 @@ class SynchronousMqttServerConnectionHandler
   SynchronousMqttServerConnectionHandler(
     clientEventBus, {
     required int maxConnectionAttempts,
-  }) : super(clientEventBus, maxConnectionAttempts: maxConnectionAttempts) {
+    // ** New **
+    required int backoffDelay,
+  }) : super(
+          clientEventBus,
+          maxConnectionAttempts: maxConnectionAttempts,
+          // ** New **
+          backoffDelay: backoffDelay,
+        ) {
     connectTimer = MqttCancellableAsyncSleep(5000);
     initialiseListeners();
   }
@@ -104,6 +111,21 @@ class SynchronousMqttServerConnectionHandler
       MqttLogger.log(
           'SynchronousMqttServerConnectionHandler::internalConnect - '
           'post sleep, state = $connectionStatus');
+
+      // exponetial backoff
+      // ** New **
+      var stopwatch = Stopwatch();
+      stopwatch.start();
+      await Future.delayed(
+          Duration(milliseconds: connectionAttempts * backoffDelay!));
+      stopwatch.stop();
+      print(stopwatch.elapsedMilliseconds);
+      print('reconnect ===== $connectionAttempts');
+      print(connectionAttempts);
+      print(maxConnectionAttempts);
+      if (connectionAttempts == (maxConnectionAttempts! - 1)) {
+        onAutoReconnectMaxAttemptCallback!();
+      }
     } while (connectionStatus.state != MqttConnectionState.connected &&
         ++connectionAttempts < maxConnectionAttempts!);
     // If we've failed to handshake with the broker, throw an exception.

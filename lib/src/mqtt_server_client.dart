@@ -16,6 +16,7 @@ class MqttServerClient extends MqttClient {
     String server,
     String clientIdentifier, {
     this.maxConnectionAttempts = 3,
+    this.backoffDelay = 200,
   }) : super(server, clientIdentifier);
 
   /// Initializes a new instance of the MqttServerClient class using
@@ -28,6 +29,7 @@ class MqttServerClient extends MqttClient {
     String clientIdentifier,
     int port, {
     this.maxConnectionAttempts = 3,
+    this.backoffDelay = 200,
   }) : super.withPort(server, clientIdentifier, port);
 
   /// The security context for secure usage
@@ -47,7 +49,13 @@ class MqttServerClient extends MqttClient {
   bool secure = false;
 
   /// Max connection attempts
-  final int maxConnectionAttempts;
+  // final int maxConnectionAttempts;
+  // ** New **
+  int maxConnectionAttempts;
+
+  /// Backoff delay in milisecond
+  /// ** New **
+  int backoffDelay;
 
   /// Performs a connect to the message broker with an optional
   /// username and password for the purposes of authentication.
@@ -66,6 +74,8 @@ class MqttServerClient extends MqttClient {
     connectionHandler = SynchronousMqttServerConnectionHandler(
       clientEventBus,
       maxConnectionAttempts: maxConnectionAttempts,
+      // ** New **
+      backoffDelay: backoffDelay,
     );
     if (useWebSocket) {
       connectionHandler.secure = false;

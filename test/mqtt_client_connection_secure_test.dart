@@ -47,6 +47,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       ch.secure = true;
       try {
@@ -68,6 +70,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       ch.secure = true;
       ch.onDisconnected = disconnectCB;
@@ -120,6 +124,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       ch.secure = true;
       final context = SecurityContext.defaultContext;
@@ -158,6 +164,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       ch.secure = true;
       ch.onDisconnected = disconnectCB;
@@ -183,6 +191,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       ch.secure = true;
       // Skip bad certificate

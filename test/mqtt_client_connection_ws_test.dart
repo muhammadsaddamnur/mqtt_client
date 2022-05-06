@@ -31,6 +31,8 @@ void main() {
         final ch = SynchronousMqttServerConnectionHandler(
           clientEventBus,
           maxConnectionAttempts: 3,
+          // ** New **
+          backoffDelay: 200,
         );
         ch.useWebSocket = true;
         await ch.connect(mockBrokerAddressWsBad, mockBrokerPortWs,
@@ -59,6 +61,8 @@ void main() {
         final ch = SynchronousMqttServerConnectionHandler(
           clientEventBus,
           maxConnectionAttempts: 3,
+          // ** New **
+          backoffDelay: 200,
         );
         ch.useWebSocket = true;
         await ch.connect(mockBrokerAddressWsNoScheme, mockBrokerPortWs,
@@ -99,6 +103,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       MqttLogger.loggingOn = true;
       ch.useWebSocket = true;

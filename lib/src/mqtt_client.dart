@@ -19,6 +19,10 @@ typedef AutoReconnectCallback = void Function();
 /// The client auto reconnect complete callback type
 typedef AutoReconnectCompleteCallback = void Function();
 
+/// The client auto reconnect max attempt
+/// ** New **
+typedef AutoReconnectMaxAttemptCallback = void Function();
+
 /// A client class for interacting with MQTT Data Packets.
 /// Do not instantiate this class directly, instead instantiate
 /// either a [MqttClientServer] class or an [MqttBrowserClient] as needed.
@@ -186,6 +190,10 @@ class MqttClient {
   /// perform any post auto reconnect actions.
   AutoReconnectCompleteCallback? onAutoReconnected;
 
+  /// Auto reconnected callback when limit max attempt
+  /// ** New **
+  AutoReconnectMaxAttemptCallback? onAutoReconnectMaxAttemptCallback;
+
   /// Subscribed callback, function returns a void and takes a
   /// string parameter, the topic that has been subscribed to.
   SubscribeCallback? _onSubscribed;
@@ -307,6 +315,9 @@ class MqttClient {
     connectionHandler.onConnected = onConnected;
     connectionHandler.onAutoReconnect = onAutoReconnect;
     connectionHandler.onAutoReconnected = onAutoReconnected;
+    // ** New **
+    connectionHandler.onAutoReconnectMaxAttemptCallback =
+        onAutoReconnectMaxAttemptCallback;
 
     publishingManager = PublishingManager(connectionHandler, clientEventBus);
     publishingManager!.manuallyAcknowledgeQos1 = _manuallyAcknowledgeQos1;

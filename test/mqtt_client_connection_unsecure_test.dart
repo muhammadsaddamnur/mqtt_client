@@ -46,6 +46,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       try {
         await ch.connect(nonExistantHostName, mockBrokerPort,
@@ -68,6 +70,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       ch.onDisconnected = disconnectCB;
       try {
@@ -87,6 +91,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       try {
         await ch.connect(mockBrokerAddress, mockBrokerPort,
@@ -114,6 +120,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       broker.setMessageHandler = messageHandler;
       ch.onConnected = connectCb;
@@ -137,6 +145,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       broker.setMessageHandler = messageHandler;
       final status = await ch.connect(mockBrokerAddress, mockBrokerPort,
@@ -176,6 +186,8 @@ void main() {
       final ch = SynchronousMqttServerConnectionHandler(
         clientEventBus,
         maxConnectionAttempts: 3,
+        // ** New **
+        backoffDelay: 200,
       );
       broker.setMessageHandler = messageHandlerConnect;
       await ch.connect(mockBrokerAddress, mockBrokerPort,

@@ -11,11 +11,23 @@ part of mqtt_browser_client;
 /// to the hostname in a synchronous manner.
 class SynchronousMqttBrowserConnectionHandler
     extends MqttBrowserConnectionHandler {
+  /// Auto reconnected callback when limit max attempt
+  /// ** New **
+  @override
+  AutoReconnectMaxAttemptCallback? onAutoReconnectMaxAttemptCallback;
+
   /// Initializes a new instance of the MqttConnectionHandler class.
   SynchronousMqttBrowserConnectionHandler(
     clientEventBus, {
     required int maxConnectionAttempts,
-  }) : super(clientEventBus, maxConnectionAttempts: maxConnectionAttempts) {
+    // ** New **
+    required int backoffDelay,
+  }) : super(
+          clientEventBus,
+          maxConnectionAttempts: maxConnectionAttempts,
+          // ** New **
+          backoffDelay: backoffDelay,
+        ) {
     connectTimer = MqttCancellableAsyncSleep(5000);
     initialiseListeners();
   }
